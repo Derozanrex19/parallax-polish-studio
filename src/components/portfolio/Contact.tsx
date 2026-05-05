@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowUpRight, Github, Linkedin, Mail, ArrowUp } from "lucide-react";
+import { ArrowUpRight, Github, Mail, Phone, MapPin, ArrowUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 export const Contact = () => {
@@ -35,7 +35,7 @@ export const Contact = () => {
           transition={{ duration: 0.6 }}
           className="font-mono text-mint text-xs tracking-widest mb-6"
         >
-          04 / GET IN TOUCH
+          06 / GET IN TOUCH
         </motion.p>
 
         <motion.h2
@@ -45,8 +45,7 @@ export const Contact = () => {
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="font-mono text-4xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] max-w-4xl mx-auto"
         >
-          Let's build something{" "}
-          <span className="text-gradient">amazing</span>.
+          Let's <span className="text-gradient">connect</span>.
         </motion.h2>
 
         <motion.p
@@ -56,8 +55,8 @@ export const Contact = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mt-8 max-w-xl mx-auto text-lg text-muted-foreground"
         >
-          Open to full-time roles, contract work, and collaborations. If you're
-          building something thoughtful — I'd love to hear about it.
+          I'm seeking an entry-level role in software development, AI, or IT
+          systems. Reach out — I'd love to hear from you.
         </motion.p>
 
         <motion.div
@@ -68,17 +67,17 @@ export const Contact = () => {
           className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <a
-            href="mailto:hello@jwa.dev"
+            href="mailto:jw.antopina@gmail.com"
             className="group inline-flex items-center gap-3 bg-gradient-mint text-primary-foreground font-mono uppercase text-xs tracking-widest px-7 py-4 rounded-md shadow-glow transition-transform duration-300 hover:scale-[1.03]"
           >
             <Mail size={16} />
-            hello@jwa.dev
+            jw.antopina@gmail.com
             <ArrowUpRight size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </a>
           <div className="flex items-center gap-2">
             {[
-              { Icon: Github, href: "https://github.com", label: "GitHub" },
-              { Icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
+              { Icon: Github, href: "https://github.com/Derozanrex19", label: "GitHub" },
+              { Icon: Phone, href: "tel:+639626024717", label: "Phone" },
             ].map(({ Icon, href, label }) => (
               <a
                 key={label}
@@ -91,13 +90,28 @@ export const Contact = () => {
             ))}
           </div>
         </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-10 flex flex-wrap items-center justify-center gap-6 font-mono text-xs text-muted-foreground"
+        >
+          <span className="flex items-center gap-2">
+            <MapPin size={14} className="text-mint" /> Pajac, Lapu-Lapu City, Cebu
+          </span>
+          <span className="flex items-center gap-2">
+            <Phone size={14} className="text-mint" /> 0962 602 4717
+          </span>
+        </motion.div>
       </div>
 
       <footer className="container relative z-10 mt-32 pt-8 border-t border-border/60 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-muted-foreground">
         <p>© {new Date().getFullYear()} John Wrexel Antopina. Crafted with React + Framer Motion.</p>
         <p className="flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-mint animate-pulse-glow" />
-          Available for work
+          Open to opportunities
         </p>
       </footer>
 

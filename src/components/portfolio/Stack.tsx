@@ -3,16 +3,24 @@ import { useRef } from "react";
 
 const groups = [
   {
-    label: "Frontend",
-    items: ["React", "TypeScript", "Next.js", "Tailwind", "Framer Motion", "Vite"],
+    label: "Languages",
+    items: ["Python", "TypeScript", "HTML", "CSS"],
   },
   {
-    label: "Backend",
-    items: ["Node.js", "Postgres", "tRPC", "GraphQL", "Redis", "Prisma"],
+    label: "Frameworks & Libraries",
+    items: ["React", "Flask", "Tailwind CSS", "Framer Motion", "Vite"],
   },
   {
-    label: "Tools / DevOps",
-    items: ["Docker", "GitHub Actions", "Vercel", "AWS", "Playwright", "Figma"],
+    label: "Focus Areas",
+    items: [
+      "Web Development",
+      "AI Automation & Prompt Engineering",
+      "Machine Learning (Basic)",
+      "System Integration",
+      "Database Fundamentals",
+      "Project Planning & Management",
+      "Game Development (Fundamentals)",
+    ],
   },
 ];
 
@@ -37,10 +45,10 @@ export const Stack = () => {
           className="max-w-2xl mb-16"
         >
           <p className="font-mono text-mint text-xs tracking-widest mb-4 flex items-center gap-3">
-            <span className="h-px w-8 bg-mint" /> 03 / TECH STACK
+            <span className="h-px w-8 bg-mint" /> 04 / TECHNICAL SKILLS
           </p>
           <h2 className="font-mono text-4xl sm:text-5xl font-bold leading-tight">
-            Tools I reach for, <span className="text-gradient">on repeat</span>.
+            Tools and tech I <span className="text-gradient">work with</span>.
           </h2>
         </motion.div>
 
