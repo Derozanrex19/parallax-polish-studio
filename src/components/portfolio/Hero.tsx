@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowDown, Github, Linkedin, Mail } from "lucide-react";
+import { ArrowDown, Github, Mail, Phone } from "lucide-react";
 import { useRef } from "react";
 
 const NAME = "John Wrexel Antopina";
@@ -18,11 +18,7 @@ export const Hero = () => {
       ref={ref}
       className="relative min-h-screen overflow-hidden flex items-center pt-20"
     >
-      {/* Parallax layers */}
-      <motion.div
-        style={{ y: yBg, willChange: "transform" }}
-        className="absolute inset-0 grid-pattern opacity-60"
-      />
+      <motion.div style={{ y: yBg, willChange: "transform" }} className="absolute inset-0 grid-pattern opacity-60" />
       <motion.div
         style={{ y: yBg, willChange: "transform" }}
         aria-hidden
@@ -34,7 +30,6 @@ export const Hero = () => {
         className="absolute bottom-0 -left-32 h-[400px] w-[400px] rounded-full bg-mint-glow/10 blur-3xl"
       />
 
-      {/* Floating geometric shapes */}
       <motion.svg
         style={{ y: yMid }}
         className="absolute top-32 right-[12%] hidden lg:block animate-float"
@@ -51,7 +46,6 @@ export const Hero = () => {
       </motion.svg>
 
       <motion.div style={{ opacity }} className="container relative z-10 grid lg:grid-cols-12 gap-12 items-center">
-        {/* Left: text */}
         <div className="lg:col-span-7">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -92,7 +86,7 @@ export const Hero = () => {
             className="mt-8 flex items-center gap-4"
           >
             <h2 className="text-xl sm:text-2xl text-muted-foreground relative inline-block">
-              Full-Stack Web Developer
+              IT Graduate · Web &amp; AI Developer
               <motion.span
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
@@ -109,9 +103,9 @@ export const Hero = () => {
             transition={{ delay: 1.3, duration: 0.6 }}
             className="mt-8 max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed"
           >
-            I craft fast, accessible, production-grade web experiences where{" "}
-            <span className="text-foreground">code meets craft</span>. From pixel-perfect
-            interfaces to resilient APIs — built to ship and built to last.
+            Detail-oriented Information Technology graduate with hands-on experience in
+            web development, AI automation, and machine learning systems — based in
+            Lapu-Lapu City, Cebu.
           </motion.p>
 
           <motion.div
@@ -131,9 +125,9 @@ export const Hero = () => {
 
             <div className="flex items-center gap-2">
               {[
-                { Icon: Github, href: "https://github.com", label: "GitHub" },
-                { Icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-                { Icon: Mail, href: "#contact", label: "Email" },
+                { Icon: Github, href: "https://github.com/Derozanrex19", label: "GitHub" },
+                { Icon: Mail, href: "mailto:jw.antopina@gmail.com", label: "Email" },
+                { Icon: Phone, href: "tel:+639626024717", label: "Phone" },
               ].map(({ Icon, href, label }) => (
                 <a
                   key={label}
@@ -148,7 +142,6 @@ export const Hero = () => {
           </motion.div>
         </div>
 
-        {/* Right: code-card visual */}
         <motion.div
           initial={{ opacity: 0, scale: 0.92, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -166,11 +159,12 @@ export const Hero = () => {
             <pre className="font-mono text-[13px] leading-relaxed p-6 overflow-x-auto">
 {`const dev = {
   name: `}<span className="text-mint">'John Wrexel Antopina'</span>{`,
-  role: `}<span className="text-mint">'Full-Stack Engineer'</span>{`,
+  role: `}<span className="text-mint">'IT Graduate / Web Dev'</span>{`,
+  location: `}<span className="text-mint">'Lapu-Lapu City, Cebu'</span>{`,
   stack: [`}<span className="text-accent">'React'</span>{`, `}<span className="text-accent">'TypeScript'</span>{`,
-          `}<span className="text-accent">'Node'</span>{`, `}<span className="text-accent">'Postgres'</span>{`],
-  focus: `}<span className="text-mint">'performance + craft'</span>{`,
-  available: `}<span className="text-accent">true</span>{`,
+          `}<span className="text-accent">'Python'</span>{`, `}<span className="text-accent">'Flask'</span>{`],
+  focus: `}<span className="text-mint">'web + AI automation'</span>{`,
+  open_to_work: `}<span className="text-accent">true</span>{`,
 };
 
 `}<span className="text-muted-foreground">// let's build something great</span>{`
@@ -181,7 +175,6 @@ dev.ship();`}
         </motion.div>
       </motion.div>
 
-      {/* Scroll indicator */}
       <motion.a
         href="#about"
         initial={{ opacity: 0 }}

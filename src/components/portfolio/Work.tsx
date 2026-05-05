@@ -1,43 +1,41 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowUpRight, Github } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { useRef } from "react";
 
 type Project = {
   title: string;
-  blurb: string;
+  subtitle: string;
+  bullets: string[];
   tags: string[];
-  year: string;
   hue: string;
 };
 
 const projects: Project[] = [
   {
-    title: "Northwind Analytics",
-    blurb: "Real-time analytics dashboard processing 2M+ events/day with sub-100ms query latency.",
-    tags: ["React", "TypeScript", "ClickHouse", "tRPC"],
-    year: "2025",
+    title: "PosturEase",
+    subtitle: "Real-Time Posture Recognition System · Capstone Project",
+    bullets: [
+      "Developed a real-time posture detection system using MediaPipe Pose and machine learning",
+      "Integrated the system using the Flask framework for backend processing",
+      "Served as Project Manager, overseeing development workflow and team coordination",
+      "Conducted dataset collection and labeling for posture classification",
+      "Produced technical documentation and system design artifacts",
+    ],
+    tags: ["Python", "Flask", "MediaPipe", "Machine Learning"],
     hue: "from-mint/30 via-mint/5 to-transparent",
   },
   {
-    title: "Lumen Commerce",
-    blurb: "Headless storefront with edge-rendered product pages and a 99 Lighthouse score.",
-    tags: ["Next.js", "Stripe", "Edge", "Tailwind"],
-    year: "2024",
+    title: "Smart Movie Picker",
+    subtitle: "Movie Recommendation Web App",
+    bullets: [
+      "Engineered a personalized movie recommendation engine based on mood, time availability, energy level, genre preferences, and regional filters",
+      "Designed a custom weighted scoring algorithm combining genre matching, runtime optimization, energy profiling, popularity bias, and quality metrics",
+      "Integrated the TMDB REST API with parallel multi-query fetching, pagination handling, retry logic, and a curated offline fallback dataset",
+      "Created a cinematic, responsive UI with Tailwind CSS and Framer Motion focused on smooth animations and zero-friction UX",
+      "Deployed via Vercel with environment-based configuration and optimized static build output",
+    ],
+    tags: ["React", "TypeScript", "Vite", "Tailwind CSS", "Framer Motion"],
     hue: "from-mint-glow/30 via-mint-glow/5 to-transparent",
-  },
-  {
-    title: "Cohort Studio",
-    blurb: "Collaborative design tool with real-time multiplayer cursors and CRDT-backed state.",
-    tags: ["WebRTC", "Yjs", "Canvas", "Node"],
-    year: "2024",
-    hue: "from-mint/20 via-mint/5 to-transparent",
-  },
-  {
-    title: "Atlas API Platform",
-    blurb: "OpenAPI-first developer portal with auto-generated SDKs and interactive playgrounds.",
-    tags: ["OpenAPI", "Postgres", "Docker", "GraphQL"],
-    year: "2023",
-    hue: "from-mint-glow/20 via-mint-glow/5 to-transparent",
   },
 ];
 
@@ -58,7 +56,6 @@ const Card = ({ project, i }: { project: Project; i: number }) => {
         ref={ref}
         className="relative overflow-hidden rounded-2xl border border-border bg-card/60 backdrop-blur-md p-8 sm:p-10 shadow-card hover:shadow-elevated transition-all duration-500 hover:border-mint/40 hover:-translate-y-1"
       >
-        {/* parallax gradient orb */}
         <motion.div
           aria-hidden
           style={{ y, willChange: "transform" }}
@@ -67,8 +64,8 @@ const Card = ({ project, i }: { project: Project; i: number }) => {
 
         <div className="relative flex items-start justify-between gap-6 mb-6">
           <div>
-            <p className="font-mono text-xs text-mint tracking-widest mb-2">
-              {project.year} · CASE STUDY
+            <p className="font-mono text-xs text-mint tracking-widest mb-2 uppercase">
+              {project.subtitle}
             </p>
             <h3 className="font-mono text-2xl sm:text-3xl font-bold group-hover:text-gradient transition-all duration-300">
               {project.title}
@@ -79,11 +76,16 @@ const Card = ({ project, i }: { project: Project; i: number }) => {
           </div>
         </div>
 
-        <p className="relative text-muted-foreground leading-relaxed mb-6 max-w-xl">
-          {project.blurb}
-        </p>
+        <ul className="relative space-y-3 mb-6">
+          {project.bullets.map((b) => (
+            <li key={b} className="flex gap-3 text-muted-foreground leading-relaxed">
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-mint/60" />
+              <span>{b}</span>
+            </li>
+          ))}
+        </ul>
 
-        <div className="relative flex flex-wrap gap-2 mb-6">
+        <div className="relative flex flex-wrap gap-2 pt-4 border-t border-border/60">
           {project.tags.map((t, ti) => (
             <motion.span
               key={t}
@@ -96,20 +98,6 @@ const Card = ({ project, i }: { project: Project; i: number }) => {
               {t}
             </motion.span>
           ))}
-        </div>
-
-        <div className="relative flex items-center gap-4 font-mono text-xs uppercase tracking-widest pt-4 border-t border-border/60">
-          <a href="#" className="text-foreground hover:text-mint transition-colors flex items-center gap-1.5">
-            View Project <ArrowUpRight size={12} />
-          </a>
-          <span className="text-border">/</span>
-          <a href="#" className="text-muted-foreground hover:text-mint transition-colors flex items-center gap-1.5">
-            <Github size={12} /> Source
-          </a>
-          <span className="text-border">/</span>
-          <a href="#" className="text-muted-foreground hover:text-mint transition-colors">
-            Live Demo
-          </a>
         </div>
       </div>
     </motion.article>
@@ -129,15 +117,15 @@ export const Work = () => {
         >
           <div>
             <p className="font-mono text-mint text-xs tracking-widest mb-4 flex items-center gap-3">
-              <span className="h-px w-8 bg-mint" /> 02 / SELECTED WORK
+              <span className="h-px w-8 bg-mint" /> 03 / PROJECTS
             </p>
             <h2 className="font-mono text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.05]">
-              Projects that <span className="text-gradient">ship</span>.
+              Things I've <span className="text-gradient">built</span>.
             </h2>
           </div>
           <p className="max-w-md text-muted-foreground">
-            A handful of recent builds — each focused on shipping real outcomes,
-            not just demos.
+            A look at projects I've designed, developed, and shipped — from
+            capstone work to personal builds.
           </p>
         </motion.div>
 

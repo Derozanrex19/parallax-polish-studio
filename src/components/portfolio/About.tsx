@@ -1,33 +1,13 @@
-import { motion, useInView, useScroll, useTransform, animate } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
-const stats = [
-  { value: 50, suffix: "+", label: "Projects shipped" },
-  { value: 6, suffix: "yrs", label: "Building for the web" },
-  { value: 99, suffix: "%", label: "Lighthouse perf" },
-  { value: 24, suffix: "/7", label: "Coffee-powered" },
+const softSkills = [
+  "Problem Solving",
+  "Technical Communication",
+  "Team Collaboration",
+  "Adaptability",
+  "Research & Analytical Thinking",
 ];
-
-const Counter = ({ to, suffix }: { to: number; suffix: string }) => {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-50px" });
-  const [val, setVal] = useState(0);
-  useEffect(() => {
-    if (!inView) return;
-    const controls = animate(0, to, {
-      duration: 1.6,
-      ease: [0.22, 1, 0.36, 1],
-      onUpdate: (v) => setVal(Math.round(v)),
-    });
-    return () => controls.stop();
-  }, [inView, to]);
-  return (
-    <span ref={ref} className="font-mono text-4xl sm:text-5xl text-gradient font-bold">
-      {val}
-      <span className="text-mint">{suffix}</span>
-    </span>
-  );
-};
 
 export const About = () => {
   const ref = useRef<HTMLElement>(null);
@@ -53,7 +33,7 @@ export const About = () => {
             <span className="h-px w-8 bg-mint" /> 01 / ABOUT
           </p>
           <h2 className="font-mono text-4xl sm:text-5xl font-bold leading-tight">
-            Engineer by training, <span className="text-gradient">designer at heart</span>.
+            Building things on the web, <span className="text-gradient">one project at a time</span>.
           </h2>
         </motion.div>
 
@@ -65,32 +45,36 @@ export const About = () => {
           className="lg:col-span-7 space-y-6 text-lg text-muted-foreground leading-relaxed"
         >
           <p>
-            I'm a full-stack developer focused on building web products that feel{" "}
-            <span className="text-foreground">fast, intentional, and human</span>. My
-            sweet spot lives between thoughtful UX, clean architecture, and the small
-            interaction details that make software feel alive.
+            I'm a detail-oriented Information Technology graduate with hands-on
+            experience in <span className="text-foreground">web development, AI
+            automation, and machine learning systems</span>. I enjoy developing
+            real-time applications, managing projects, and applying emerging
+            technologies in practical environments.
           </p>
           <p>
-            Whether shipping a marketing site that loads under a second or a real-time
-            dashboard that scales — I sweat the details that ship.
+            My background includes social media technology deployment, prompt
+            engineering, and system development. I'm currently seeking an entry-level
+            role in software development, AI, or IT systems.
           </p>
 
-          <div className="grid grid-cols-2 gap-6 pt-8">
-            {stats.map((s, i) => (
-              <motion.div
-                key={s.label}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 + i * 0.1, duration: 0.6 }}
-                className="border-l-2 border-mint/40 pl-4"
-              >
-                <Counter to={s.value} suffix={s.suffix} />
-                <p className="mt-1 text-sm font-mono uppercase tracking-widest text-muted-foreground">
-                  {s.label}
-                </p>
-              </motion.div>
-            ))}
+          <div className="pt-6">
+            <p className="font-mono text-xs uppercase tracking-widest text-mint mb-4">
+              Soft skills
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {softSkills.map((s, i) => (
+                <motion.span
+                  key={s}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 + i * 0.05, duration: 0.4 }}
+                  className="font-mono text-xs px-3 py-1.5 rounded-full border border-border bg-card/60 text-muted-foreground hover:border-mint/50 hover:text-mint transition-colors"
+                >
+                  {s}
+                </motion.span>
+              ))}
+            </div>
           </div>
         </motion.div>
       </div>
@@ -99,7 +83,7 @@ export const About = () => {
       <div className="relative mt-24 overflow-hidden border-y border-border/60 py-6 bg-card/30">
         <div className="flex w-max animate-marquee gap-12 font-mono text-2xl sm:text-4xl text-muted-foreground/50 uppercase tracking-tight">
           {Array.from({ length: 2 }).flatMap((_, k) =>
-            ["Performance", "★", "Accessibility", "★", "Design Systems", "★", "Scalability", "★", "Craft", "★"].map(
+            ["Web Development", "★", "AI Automation", "★", "Machine Learning", "★", "Prompt Engineering", "★", "System Integration", "★"].map(
               (w, i) => (
                 <span key={`${k}-${i}`} className={w === "★" ? "text-mint" : ""}>
                   {w}
