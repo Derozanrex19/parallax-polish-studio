@@ -1,8 +1,31 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDown, Github, Mail, Phone } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const NAME = "John Wrexel Antopina";
+const CODE_SEGMENTS = [
+  { text: "const dev = {\n  name: " },
+  { text: "'John Wrexel Antopina'", className: "text-mint" },
+  { text: ",\n  role: " },
+  { text: "'IT Graduate / Web Dev'", className: "text-mint" },
+  { text: ",\n  location: " },
+  { text: "'Lapu-Lapu City, Cebu'", className: "text-mint" },
+  { text: ",\n  stack: [" },
+  { text: "'React'", className: "text-accent" },
+  { text: ", " },
+  { text: "'TypeScript'", className: "text-accent" },
+  { text: ",\n          " },
+  { text: "'Python'", className: "text-accent" },
+  { text: ", " },
+  { text: "'Flask'", className: "text-accent" },
+  { text: "],\n  focus: " },
+  { text: "'web + AI automation'", className: "text-mint" },
+  { text: ",\n  open_to_work: " },
+  { text: "true", className: "text-accent" },
+  { text: ",\n};\n\n" },
+  { text: "// let's build something great", className: "text-muted-foreground" },
+  { text: "\ndev.ship();" },
+] as const;
 
 export const Hero = () => {
   const ref = useRef<HTMLElement>(null);
@@ -11,6 +34,41 @@ export const Hero = () => {
   const yMid = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
   const yFg = useTransform(scrollYProgress, [0, 1], ["0%", "8%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const [visibleChars, setVisibleChars] = useState(0);
+  const typedChars = useMemo(
+    () =>
+      CODE_SEGMENTS.flatMap((segment) =>
+        Array.from(segment.text).map((char) => ({ char, className: segment.className ?? "" }))
+      ),
+    []
+  );
+
+  useEffect(() => {
+    setVisibleChars(0);
+    const startDelayMs = 900;
+    const typeSpeedMs = 18;
+    let typingTimer: number | undefined;
+    const startTimer = window.setTimeout(() => {
+      typingTimer = window.setInterval(() => {
+        setVisibleChars((current) => {
+          if (current >= typedChars.length) {
+            if (typingTimer) {
+              window.clearInterval(typingTimer);
+            }
+            return current;
+          }
+          return current + 1;
+        });
+      }, typeSpeedMs);
+    }, startDelayMs);
+
+    return () => {
+      window.clearTimeout(startTimer);
+      if (typingTimer) {
+        window.clearInterval(typingTimer);
+      }
+    };
+  }, [typedChars.length]);
 
   return (
     <section
@@ -86,7 +144,7 @@ export const Hero = () => {
             className="mt-8 flex items-center gap-4"
           >
             <h2 className="text-xl sm:text-2xl text-muted-foreground relative inline-block">
-              IT Graduate · Web &amp; AI Developer
+              Web &amp; AI Developer
               <motion.span
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
@@ -104,8 +162,7 @@ export const Hero = () => {
             className="mt-8 max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed"
           >
             Detail-oriented Information Technology graduate with hands-on experience in
-            web development, AI automation, and machine learning systems — based in
-            Lapu-Lapu City, Cebu.
+            web development, AI automation, and machine learning systems.
           </motion.p>
 
           <motion.div
@@ -152,23 +209,20 @@ export const Hero = () => {
           <div className="relative rounded-2xl border border-border bg-card/70 backdrop-blur-xl shadow-elevated overflow-hidden noise">
             <div className="flex items-center gap-1.5 px-4 py-3 border-b border-border/60">
               <span className="h-2.5 w-2.5 rounded-full bg-destructive/70" />
-              <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/70" />
+              <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/70" />
               <span className="h-2.5 w-2.5 rounded-full bg-mint/70" />
               <span className="ml-3 font-mono text-xs text-muted-foreground">developer.ts</span>
             </div>
             <pre className="font-mono text-[13px] leading-relaxed p-6 overflow-x-auto">
-{`const dev = {
-  name: `}<span className="text-mint">'John Wrexel Antopina'</span>{`,
-  role: `}<span className="text-mint">'IT Graduate / Web Dev'</span>{`,
-  location: `}<span className="text-mint">'Lapu-Lapu City, Cebu'</span>{`,
-  stack: [`}<span className="text-accent">'React'</span>{`, `}<span className="text-accent">'TypeScript'</span>{`,
-          `}<span className="text-accent">'Python'</span>{`, `}<span className="text-accent">'Flask'</span>{`],
-  focus: `}<span className="text-mint">'web + AI automation'</span>{`,
-  open_to_work: `}<span className="text-accent">true</span>{`,
-};
-
-`}<span className="text-muted-foreground">// let's build something great</span>{`
-dev.ship();`}
+              {typedChars.slice(0, visibleChars).map(({ char, className }, index) => (
+                <span key={`${index}-${char}`} className={className}>
+                  {char}
+                </span>
+              ))}
+              <span
+                aria-hidden
+                className="inline-block w-2 h-[1.1em] align-[-0.2em] ml-0.5 bg-mint/70 animate-pulse"
+              />
             </pre>
           </div>
           <div className="absolute -inset-4 -z-10 bg-mint/10 blur-3xl rounded-full" />

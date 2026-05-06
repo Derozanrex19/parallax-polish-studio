@@ -1,13 +1,15 @@
-import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
-import { useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 type Project = {
   title: string;
   subtitle: string;
   bullets: string[];
   tags: string[];
-  hue: string;
+  liveUrl: string;
+  coverImage?: string;
+  detailImage?: string;
 };
 
 const projects: Project[] = [
@@ -15,91 +17,148 @@ const projects: Project[] = [
     title: "PosturEase",
     subtitle: "Real-Time Posture Recognition System · Capstone Project",
     bullets: [
-      "Developed a real-time posture detection system using MediaPipe Pose and machine learning",
-      "Integrated the system using the Flask framework for backend processing",
-      "Served as Project Manager, overseeing development workflow and team coordination",
-      "Conducted dataset collection and labeling for posture classification",
-      "Produced technical documentation and system design artifacts",
+      "Developed a real-time posture detection system using MediaPipe Pose and machine learning.",
+      "Integrated Flask for backend processing and model workflow support.",
+      "Served as project manager, handling team coordination and delivery flow.",
     ],
     tags: ["Python", "Flask", "MediaPipe", "Machine Learning"],
-    hue: "from-mint/30 via-mint/5 to-transparent",
+    liveUrl: "#",
   },
   {
     title: "Smart Movie Picker",
     subtitle: "Movie Recommendation Web App",
     bullets: [
-      "Engineered a personalized movie recommendation engine based on mood, time availability, energy level, genre preferences, and regional filters",
-      "Designed a custom weighted scoring algorithm combining genre matching, runtime optimization, energy profiling, popularity bias, and quality metrics",
-      "Integrated the TMDB REST API with parallel multi-query fetching, pagination handling, retry logic, and a curated offline fallback dataset",
-      "Created a cinematic, responsive UI with Tailwind CSS and Framer Motion focused on smooth animations and zero-friction UX",
-      "Deployed via Vercel with environment-based configuration and optimized static build output",
+      "Built a personalized recommendation engine using weighted mood, time, and genre scoring.",
+      "Integrated TMDB API with retry handling and fallback dataset logic.",
+      "Delivered a responsive experience with motion-focused UI polish.",
     ],
     tags: ["React", "TypeScript", "Vite", "Tailwind CSS", "Framer Motion"],
-    hue: "from-mint-glow/30 via-mint-glow/5 to-transparent",
+    liveUrl: "#",
+  },
+  {
+    title: "LifeSights",
+    subtitle: "Data Analytics Dashboard · UI Contribution",
+    bullets: [
+      "Led key UI implementation for dashboard workflows that open and analyze spreadsheet files from Google Drive.",
+      "Designed smooth analysis states, tab flows, and visual feedback for large workbook processing.",
+      "Built consistent UX patterns across charts, filters, raw table, and chatbot surfaces.",
+    ],
+    tags: ["React", "Vite", "Tailwind CSS", "Firebase", "Firestore", "Google Drive"],
+    liveUrl: "#",
+    coverImage: "/projects/lifesights-cover.png",
+    detailImage: "/projects/lifesights-detail.png",
   },
 ];
 
-const Card = ({ project, i }: { project: Project; i: number }) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["6%", "-6%"]);
+const ProjectCard = ({ project }: { project: Project }) => {
+  const [expanded, setExpanded] = useState(false);
+  const fallbackSeed = project.title.toLowerCase().replace(/\s+/g, "-");
+  const fallbackCover = `https://picsum.photos/seed/${fallbackSeed}-cover/1200/700`;
+  const fallbackDetail = `https://picsum.photos/seed/${fallbackSeed}-detail/1200/700`;
+  const [coverSrc, setCoverSrc] = useState(project.coverImage ?? fallbackCover);
+  const [detailSrc, setDetailSrc] = useState(project.detailImage ?? fallbackDetail);
+  const [coverTriedFallback, setCoverTriedFallback] = useState(!project.coverImage);
+  const [detailTriedFallback, setDetailTriedFallback] = useState(!project.detailImage);
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.7, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative"
+      transition={{ duration: 0.55 }}
+      className="group rounded-2xl border border-border bg-card/60 backdrop-blur-md overflow-hidden"
+      onMouseEnter={() => setExpanded(true)}
+      onMouseLeave={() => setExpanded(false)}
     >
-      <div
-        ref={ref}
-        className="relative overflow-hidden rounded-2xl border border-border bg-card/60 backdrop-blur-md p-8 sm:p-10 shadow-card hover:shadow-elevated transition-all duration-500 hover:border-mint/40 hover:-translate-y-1"
-      >
-        <motion.div
-          aria-hidden
-          style={{ y, willChange: "transform" }}
-          className={`pointer-events-none absolute -top-20 -right-20 h-72 w-72 rounded-full bg-gradient-to-br ${project.hue} blur-2xl opacity-70 group-hover:opacity-100 transition-opacity duration-500`}
+      <div className="relative">
+        <img
+          src={coverSrc}
+          alt={`${project.title} project preview`}
+          className="h-52 w-full object-cover opacity-80"
+          onError={() => {
+            if (!coverTriedFallback) {
+              setCoverTriedFallback(true);
+              setCoverSrc(fallbackCover);
+            }
+          }}
         />
-
-        <div className="relative flex items-start justify-between gap-6 mb-6">
-          <div>
-            <p className="font-mono text-xs text-mint tracking-widest mb-2 uppercase">
-              {project.subtitle}
-            </p>
-            <h3 className="font-mono text-2xl sm:text-3xl font-bold group-hover:text-gradient transition-all duration-300">
-              {project.title}
-            </h3>
-          </div>
-          <div className="h-12 w-12 shrink-0 grid place-items-center rounded-full border border-border group-hover:border-mint group-hover:bg-mint group-hover:text-primary-foreground transition-all duration-500">
-            <ArrowUpRight size={18} className="group-hover:rotate-12 transition-transform duration-500" />
-          </div>
-        </div>
-
-        <ul className="relative space-y-3 mb-6">
-          {project.bullets.map((b) => (
-            <li key={b} className="flex gap-3 text-muted-foreground leading-relaxed">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-mint/60" />
-              <span>{b}</span>
-            </li>
-          ))}
-        </ul>
-
-        <div className="relative flex flex-wrap gap-2 pt-4 border-t border-border/60">
-          {project.tags.map((t, ti) => (
-            <motion.span
-              key={t}
-              initial={{ opacity: 0, scale: 0.85 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 + ti * 0.06, duration: 0.4 }}
-              className="font-mono text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-full border border-border bg-background/60 text-muted-foreground hover:border-mint/50 hover:text-mint transition-colors"
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 p-6">
+          <p className="font-mono text-[11px] uppercase tracking-widest text-mint mb-2">
+            {project.subtitle}
+          </p>
+          <div className="flex items-center justify-between gap-4">
+            <h3 className="font-mono text-2xl sm:text-3xl font-bold text-foreground">{project.title}</h3>
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Open ${project.title} website`}
+              className="h-11 w-11 shrink-0 grid place-items-center rounded-full border border-border bg-background/70 text-foreground hover:bg-mint hover:text-primary-foreground hover:border-mint transition-colors"
             >
-              {t}
-            </motion.span>
-          ))}
+              <ArrowUpRight size={18} />
+            </a>
+          </div>
         </div>
       </div>
+
+      <button
+        type="button"
+        className="md:hidden w-full flex items-center justify-between px-6 py-3 border-t border-border/70 font-mono text-xs uppercase tracking-widest text-muted-foreground"
+        onClick={() => setExpanded((v) => !v)}
+      >
+        Project details
+        <ChevronDown
+          size={15}
+          className={`transition-transform ${expanded ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      <AnimatePresence initial={false}>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.28 }}
+            className="overflow-hidden"
+          >
+            <div className="px-6 pb-6 pt-4 border-t border-border/70">
+              <img
+                src={detailSrc}
+                alt={`${project.title} detailed dashboard preview`}
+                className="w-full h-56 object-cover rounded-xl border border-border/70 mb-5"
+                onError={() => {
+                  if (!detailTriedFallback) {
+                    setDetailTriedFallback(true);
+                    setDetailSrc(fallbackDetail);
+                  }
+                }}
+              />
+
+              <ul className="space-y-3 mb-5">
+                {project.bullets.map((bullet) => (
+                  <li key={bullet} className="flex gap-3 text-muted-foreground leading-relaxed text-sm sm:text-base">
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-mint/65" />
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="flex flex-wrap gap-2 pt-4 border-t border-border/70">
+                {project.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="font-mono text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-full border border-border bg-background/60 text-muted-foreground"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.article>
   );
 };
@@ -124,14 +183,13 @@ export const Work = () => {
             </h2>
           </div>
           <p className="max-w-md text-muted-foreground">
-            A look at projects I've designed, developed, and shipped — from
-            capstone work to personal builds.
+            Title-first cards with on-demand details for a cleaner reading flow.
           </p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
-          {projects.map((p, i) => (
-            <Card key={p.title} project={p} i={i} />
+          {projects.map((project) => (
+            <ProjectCard key={project.title} project={project} />
           ))}
         </div>
       </div>

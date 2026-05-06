@@ -9,7 +9,7 @@ import { Contact } from "@/components/portfolio/Contact";
 
 const Index = () => {
   return (
-    <main className="relative min-h-screen overflow-x-hidden">
+    <main id="main-content" className="relative min-h-screen overflow-x-hidden">
       <Navbar />
       <Hero />
       <About />
