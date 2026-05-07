@@ -1,0 +1,93 @@
+#infinite-grid-menu-canvas {
+  cursor: grab;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  outline: none;
+}
+
+#infinite-grid-menu-canvas:active {
+  cursor: grabbing;
+}
+
+.infinite-face-title,
+.infinite-face-description,
+.infinite-action-button {
+  user-select: none;
+  pointer-events: none;
+}
+
+.infinite-face-title {
+  position: absolute;
+  left: 3rem;
+  bottom: 4rem;
+  max-width: 14ch;
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 700;
+  font-size: clamp(1.8rem, 3.5vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: hsl(var(--foreground));
+  text-shadow: 0 8px 26px rgba(0, 0, 0, 0.5);
+}
+
+.infinite-face-description {
+  position: absolute;
+  right: 3rem;
+  bottom: 4rem;
+  max-width: 32ch;
+  font-size: clamp(0.96rem, 1.2vw, 1.12rem);
+  line-height: 1.6;
+  color: hsl(var(--muted-foreground));
+  text-align: right;
+}
+
+.infinite-action-button {
+  position: absolute;
+  left: 50%;
+  bottom: 2.2rem;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  border: 1px solid hsl(var(--mint) / 0.55);
+  background: hsl(var(--background) / 0.72);
+  backdrop-filter: blur(10px);
+  display: grid;
+  place-items: center;
+  color: hsl(var(--mint));
+  transition: all 0.28s ease;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.infinite-action-button:hover {
+  background: hsl(var(--mint) / 0.2);
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.infinite-face-title.active,
+.infinite-face-description.active,
+.infinite-action-button.active {
+  opacity: 1;
+  transition: 0.35s ease;
+}
+
+.infinite-face-title.inactive,
+.infinite-face-description.inactive,
+.infinite-action-button.inactive {
+  opacity: 0;
+  transition: 0.12s ease;
+}
+
+@media (max-width: 1024px) {
+  .infinite-face-title,
+  .infinite-face-description {
+    display: none;
+  }
+
+  .infinite-action-button {
+    bottom: 1.4rem;
+  }
+}

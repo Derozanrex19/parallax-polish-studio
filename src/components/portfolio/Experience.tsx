@@ -57,7 +57,7 @@ export const Experience = () => {
   const panelDirection = useMemo(() => (activeIndex === 0 ? -1 : 1), [activeIndex]);
 
   return (
-    <section id="experience" className="relative py-32 overflow-hidden">
+    <section id="experience" className="section-shell overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute -top-24 right-6 h-72 w-72 rounded-full bg-mint/15 blur-3xl" />
         <div className="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-mint-glow/10 blur-3xl" />
@@ -69,15 +69,17 @@ export const Experience = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
-          className="max-w-3xl mb-12"
+          className="max-w-3xl section-header"
         >
-          <p className="font-mono text-mint text-xs tracking-widest mb-4 flex items-center gap-3">
-            <span className="h-px w-8 bg-mint" /> 02 / EXPERIENCE
+          <p className="section-eyebrow">
+            <span className="h-px w-8 bg-mint" /> 04 / EXPERIENCE
           </p>
-          <h2 className="font-mono text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.04] mb-4">
-            Role journey with clear <span className="text-gradient">growth</span>.
+          <h2 className="section-title mb-4">
+            Professional <span className="text-gradient">experience</span>
           </h2>
-        
+          <p className="section-lead">
+            Hover a role card to view responsibilities, impact, and growth focus.
+          </p>
         </motion.div>
 
         <div className="rounded-2xl border border-border/75 bg-card/60 backdrop-blur-xl p-4 sm:p-6">
@@ -166,9 +168,11 @@ export const Experience = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="rounded-xl border border-dashed border-border/70 bg-card/35 p-6 sm:p-8"
+                  className="rounded-xl border border-dashed border-border/70 bg-card/35 p-6 sm:p-8 text-center"
                 >
-                  
+                  <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+                    Hover any role above to preview details
+                  </p>
                 </motion.div>
               )}
             </AnimatePresence>

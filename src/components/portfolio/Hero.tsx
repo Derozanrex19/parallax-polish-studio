@@ -1,13 +1,15 @@
 import { motion, useScroll, useTransform } from "framer-motion";
+import { SplineScene } from "./SplineScene";
 import { ArrowDown, Github, Mail, Phone } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 const NAME = "John Wrexel Antopina";
+const HERO_ROBOT_SCENE = "https://prod.spline.design/6Wq1Q7YGyM-iab9i/scene.splinecode";
 const CODE_SEGMENTS = [
   { text: "const dev = {\n  name: " },
   { text: "'John Wrexel Antopina'", className: "text-mint" },
   { text: ",\n  role: " },
-  { text: "'IT Graduate / Web Dev'", className: "text-mint" },
+  { text: "'Web Developer / Automation Developer'", className: "text-mint" },
   { text: ",\n  location: " },
   { text: "'Lapu-Lapu City, Cebu'", className: "text-mint" },
   { text: ",\n  stack: [" },
@@ -87,7 +89,6 @@ export const Hero = () => {
         aria-hidden
         className="absolute bottom-0 -left-32 h-[400px] w-[400px] rounded-full bg-mint-glow/10 blur-3xl"
       />
-
       <motion.svg
         style={{ y: yMid }}
         className="absolute top-32 right-[12%] hidden lg:block animate-float"
@@ -230,7 +231,7 @@ export const Hero = () => {
       </motion.div>
 
       <motion.a
-        href="#about"
+        href="#expertise"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.8, duration: 0.6 }}

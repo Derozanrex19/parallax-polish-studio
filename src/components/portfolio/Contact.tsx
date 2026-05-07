@@ -15,7 +15,7 @@ export const Contact = () => {
   }, []);
 
   return (
-    <section id="contact" ref={ref} className="relative py-32 overflow-hidden">
+    <section id="contact" ref={ref} className="section-shell overflow-hidden">
       <motion.div
         aria-hidden
         style={{ y: yBg }}
@@ -33,9 +33,9 @@ export const Contact = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="font-mono text-mint text-xs tracking-widest mb-6"
+          className="section-eyebrow justify-center"
         >
-          06 / GET IN TOUCH
+          05 / CONTACT
         </motion.p>
 
         <motion.h2
@@ -43,9 +43,9 @@ export const Contact = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="font-mono text-4xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] max-w-4xl mx-auto"
+          className="section-title max-w-4xl mx-auto"
         >
-          Let's <span className="text-gradient">connect</span>.
+          Available for select <span className="text-gradient">opportunities</span>
         </motion.h2>
 
         <motion.p
@@ -53,10 +53,10 @@ export const Contact = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-8 max-w-xl mx-auto text-lg text-muted-foreground"
+          className="mt-8 max-w-2xl mx-auto section-lead"
         >
-          I'm seeking an entry-level role in software development, AI, or IT
-          systems. Reach out — I'd love to hear from you.
+          If you have a product idea, dashboard build, or frontend role that needs
+          thoughtful execution, I would love to hear from you.
         </motion.p>
 
         <motion.div

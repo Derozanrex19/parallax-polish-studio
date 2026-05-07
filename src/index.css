@@ -133,4 +133,19 @@
     mix-blend-mode: overlay;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
+  .section-shell {
+    @apply relative py-28 sm:py-32;
+  }
+  .section-header {
+    @apply mb-12 sm:mb-14;
+  }
+  .section-eyebrow {
+    @apply font-mono text-mint text-xs tracking-widest mb-4 flex items-center gap-3 uppercase;
+  }
+  .section-title {
+    @apply font-mono text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight;
+  }
+  .section-lead {
+    @apply text-muted-foreground text-base sm:text-lg leading-relaxed;
+  }
 }
