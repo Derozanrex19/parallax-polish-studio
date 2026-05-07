@@ -1,125 +1,99 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, X, ChevronLeft, ChevronRight } from "lucide-react";
-import InfiniteMenu from "./InfiniteMenu";
+import { useState, useEffect, useCallback } from "react";
+import type { ElementType } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { Bot, ChartBar, Film, Scan, ArrowUpRight } from "lucide-react";
 
 type Feature = {
   id: string;
+  label: string;
+  icon: ElementType;
   image: string;
   description: string;
-  type: string;
-  details: string[];
-  tags: string[];
   link: string;
-  label: string;
 };
 
 const FEATURES: Feature[] = [
   {
     id: "posturease",
     label: "PosturEase",
+    icon: Scan,
     image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200",
     description: "Real-time posture recognition with ML and Flask integration.",
-    type: "Capstone Project",
-    details: [
-      "Developed a real-time posture detection pipeline with MediaPipe Pose and classification models.",
-      "Integrated Flask backend processing for model inference and response handling.",
-      "Managed project workflow and delivery coordination as project lead.",
-    ],
-    tags: ["Python", "Flask", "MediaPipe", "Machine Learning"],
     link: "#",
   },
   {
     id: "supportiq",
     label: "SupportIQ",
+    icon: Bot,
     image: "/projects/smartiq-01.png",
     description: "AI-assisted support workflow with policy-based routing.",
-    type: "Technical Demo",
-    details: [
-      "Built support ticket UI flows for AI draft generation and agent response handling.",
-      "Implemented policy-aware state transitions for needs-human and auto-send paths.",
-      "Designed readable conversation and status patterns for operational support teams.",
-    ],
-    tags: ["React", "Supabase", "n8n", "Groq", "EmailJS"],
     link: "#",
   },
   {
     id: "lifesights",
     label: "LifeSights",
+    icon: ChartBar,
     image: "/projects/lifesights-01.png",
     description: "Dashboard UI implementation for spreadsheet analytics.",
-    type: "Production Project",
-    details: [
-      "Implemented key dashboard interfaces for spreadsheet ingestion and analysis navigation.",
-      "Built loading, progress, and tab interaction states for large workbook workflows.",
-      "Improved table and chart usability for data-heavy decision-making surfaces.",
-    ],
-    tags: ["React", "Vite", "Tailwind CSS", "Firebase", "Firestore"],
     link: "#",
   },
   {
     id: "moviepicker",
     label: "Movie Picker",
+    icon: Film,
     image: "/projects/moviepicker-01.png",
-    description: "Recommendation app with weighted scoring and polished UX.",
-    type: "Personal Project",
-    details: [
-      "Created recommendation logic using weighted mood, time, and genre preference signals.",
-      "Integrated API retrieval with fallback handling for resilient content delivery.",
-      "Designed and shipped a clean, animated frontend experience focused on simplicity.",
-    ],
-    tags: ["React", "TypeScript", "Vite", "Tailwind CSS", "Framer Motion"],
+    description: "Movie recommendation app",
     link: "#",
   },
 ];
 
+const AUTO_PLAY_INTERVAL = 3000;
+const ITEM_HEIGHT = 64;
+
+const wrap = (min: number, max: number, v: number) => {
+  const range = max - min;
+  return ((((v - min) % range) + range) % range) + min;
+};
+
 export const Work = () => {
-  const [modalId, setModalId] = useState<string | null>(null);
-  const modalFeature = FEATURES.find((feature) => feature.id === modalId) ?? null;
-  const modalIndex = modalFeature ? FEATURES.findIndex((feature) => feature.id === modalFeature.id) : -1;
+  const [step, setStep] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const currentIndex = ((step % FEATURES.length) + FEATURES.length) % FEATURES.length;
 
-  const menuItems = useMemo(
-    () =>
-      FEATURES.map((feature) => ({
-        id: feature.id,
-        image: feature.image,
-        link: feature.link,
-        title: feature.label,
-        description: feature.description,
-      })),
-    []
-  );
+  const nextStep = useCallback(() => {
+    setStep((prev) => prev + 1);
+  }, []);
 
-  const goToModalIndex = (index: number) => {
-    const len = FEATURES.length;
-    const wrapped = ((index % len) + len) % len;
-    setModalId(FEATURES[wrapped].id);
+  const handleChipClick = (index: number) => {
+    const diff = (index - currentIndex + FEATURES.length) % FEATURES.length;
+    if (diff > 0) setStep((s) => s + diff);
   };
 
   useEffect(() => {
-    if (!modalFeature) return;
+    if (isPaused) return;
+    const interval = window.setInterval(nextStep, AUTO_PLAY_INTERVAL);
+    return () => window.clearInterval(interval);
+  }, [nextStep, isPaused]);
 
-    const prevBodyOverflow = document.body.style.overflow;
-    const prevHtmlOverflow = document.documentElement.style.overflow;
-    const prevBodyTouchAction = document.body.style.touchAction;
-
-    document.body.style.overflow = "hidden";
-    document.documentElement.style.overflow = "hidden";
-    document.body.style.touchAction = "none";
-
-    return () => {
-      document.body.style.overflow = prevBodyOverflow;
-      document.documentElement.style.overflow = prevHtmlOverflow;
-      document.body.style.touchAction = prevBodyTouchAction;
-    };
-  }, [modalFeature]);
+  const getCardStatus = (index: number) => {
+    const diff = index - currentIndex;
+    const len = FEATURES.length;
+    let normalized = diff;
+    if (diff > len / 2) normalized -= len;
+    if (diff < -len / 2) normalized += len;
+    if (normalized === 0) return "active";
+    if (normalized === -1) return "prev";
+    if (normalized === 1) return "next";
+    return "hidden";
+  };
 
   return (
     <section id="work" className="section-shell">
       <div className="container">
-        <div className="grid lg:grid-cols-12 gap-8 mb-10 items-start">
+        <div className="grid lg:grid-cols-12 gap-8 mb-12 items-start">
           <div className="lg:col-span-7">
             <p className="section-eyebrow">
               <span className="h-px w-8 bg-mint" /> 03 / PROJECTS
@@ -129,140 +103,126 @@ export const Work = () => {
             </h2>
           </div>
           <p className="lg:col-span-5 section-lead">
-            Drag and explore my projects in a 3D infinite menu. Open any focused item for full details.
+            Interactive rotating showcase of my project work, UI craft, and implementation focus.
           </p>
         </div>
 
-        <div className="relative h-[56vh] min-h-[420px] max-h-[620px] md:h-[64vh] md:min-h-[500px] md:max-h-[700px] w-full overflow-hidden">
-          <InfiniteMenu
-            items={menuItems}
-            scale={0.82}
-            onItemAction={(item) => {
-              if (item.id) setModalId(item.id);
-            }}
-          />
+        <div className="w-full max-w-7xl mx-auto md:p-2">
+          <div className="relative overflow-visible flex flex-col lg:flex-row min-h-[600px] lg:aspect-video">
+            <div className="w-full lg:w-[40%] min-h-[350px] md:min-h-[450px] lg:h-full relative z-30 flex flex-col items-start justify-center overflow-hidden px-8 md:px-16 lg:pl-16 bg-transparent">
+              <div className="absolute inset-x-0 top-0 h-12 md:h-20 lg:h-16 bg-gradient-to-b from-background via-background/80 to-transparent z-40" />
+              <div className="absolute inset-x-0 bottom-0 h-12 md:h-20 lg:h-16 bg-gradient-to-t from-background via-background/80 to-transparent z-40" />
+
+              <div className="relative w-full h-full flex items-center justify-center lg:justify-start z-20">
+                {FEATURES.map((feature, index) => {
+                  const isActive = index === currentIndex;
+                  const distance = index - currentIndex;
+                  const wrappedDistance = wrap(-(FEATURES.length / 2), FEATURES.length / 2, distance);
+                  const Icon = feature.icon;
+
+                  return (
+                    <motion.div
+                      key={feature.id}
+                      style={{ height: ITEM_HEIGHT, width: "fit-content" }}
+                      animate={{
+                        y: wrappedDistance * ITEM_HEIGHT,
+                        opacity: 1 - Math.abs(wrappedDistance) * 0.25,
+                      }}
+                      transition={{ type: "spring", stiffness: 90, damping: 22, mass: 1 }}
+                      className="absolute flex items-center justify-start"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => handleChipClick(index)}
+                        onMouseEnter={() => setIsPaused(true)}
+                        onMouseLeave={() => setIsPaused(false)}
+                        className={cn(
+                          "relative flex items-center gap-4 px-6 md:px-10 lg:px-8 py-3.5 md:py-5 lg:py-4 rounded-full transition-all duration-700 text-left group border",
+                          isActive
+                            ? "bg-white text-foreground border-white z-10"
+                            : "bg-background/35 text-white/60 border-white/20 hover:border-white/40 hover:text-white"
+                        )}
+                      >
+                        <div className={cn("flex items-center justify-center transition-colors duration-500", isActive ? "text-[#62B2FE]" : "text-white/40")}>
+                          <Icon size={18} strokeWidth={2} />
+                        </div>
+                        <span className="font-normal text-sm md:text-[15px] tracking-tight whitespace-nowrap uppercase">
+                          {feature.label}
+                        </span>
+                      </button>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="flex-1 min-h-[500px] md:min-h-[600px] lg:h-full relative bg-transparent flex items-center justify-center py-16 md:py-24 lg:py-16 px-6 md:px-12 lg:px-10 overflow-hidden">
+              <div className="relative w-full max-w-[420px] aspect-[4/5] flex items-center justify-center">
+                {FEATURES.map((feature, index) => {
+                  const status = getCardStatus(index);
+                  const isActive = status === "active";
+                  const isPrev = status === "prev";
+                  const isNext = status === "next";
+
+                  return (
+                    <motion.div
+                      key={feature.id}
+                      initial={false}
+                      animate={{
+                        x: isActive ? 0 : isPrev ? -100 : isNext ? 100 : 0,
+                        scale: isActive ? 1 : isPrev || isNext ? 0.85 : 0.7,
+                        opacity: isActive ? 1 : isPrev || isNext ? 0.4 : 0,
+                        rotate: isPrev ? -3 : isNext ? 3 : 0,
+                        zIndex: isActive ? 20 : isPrev || isNext ? 10 : 0,
+                        pointerEvents: isActive ? "auto" : "none",
+                      }}
+                      transition={{ type: "spring", stiffness: 260, damping: 25, mass: 0.8 }}
+                      className="absolute inset-0 rounded-[2rem] md:rounded-[2.8rem] overflow-hidden border-4 md:border-8 border-background bg-background origin-center"
+                    >
+                      <img
+                        src={feature.image}
+                        alt={feature.label}
+                        className={cn(
+                          "w-full h-full object-cover transition-all duration-700",
+                          isActive ? "grayscale-0 blur-0" : "grayscale blur-[2px] brightness-75"
+                        )}
+                      />
+
+                      <AnimatePresence>
+                        {isActive && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            className="absolute inset-x-0 bottom-0 p-10 pt-32 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end pointer-events-none"
+                          >
+                            <p className="text-white font-normal text-xl md:text-2xl leading-tight drop-shadow-md tracking-tight">
+                              {feature.description}
+                            </p>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
+                      <a
+                        href={feature.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={cn(
+                          "absolute top-8 right-8 h-10 w-10 rounded-full border border-white/25 bg-black/35 text-white grid place-items-center backdrop-blur-sm transition-all",
+                          isActive ? "opacity-100 hover:bg-white hover:text-black" : "opacity-0 pointer-events-none"
+                        )}
+                        aria-label={`Open ${feature.label}`}
+                      >
+                        <ArrowUpRight size={16} />
+                      </a>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <AnimatePresence>
-        {modalFeature && (
-          <motion.div
-            className="fixed inset-0 z-[90] bg-background/80 backdrop-blur-md p-0 sm:p-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setModalId(null)}
-          >
-            <motion.div
-              className="mx-auto h-[100dvh] w-full sm:mt-[2dvh] sm:h-[96dvh] sm:w-[96vw] sm:max-w-[1240px] rounded-none sm:rounded-3xl border border-border/70 bg-black/85 overflow-hidden"
-              initial={{ y: 18, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 18, opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="grid h-full lg:grid-cols-[1.9fr_0.95fr]">
-                <div className="relative p-3 sm:p-5 lg:p-6 border-b lg:border-b-0 lg:border-r border-border/50 overflow-hidden">
-                  <div className="absolute left-7 right-7 top-7 h-3 rounded-full bg-background/60 border border-border/40" />
-                  <div className="mt-8 rounded-2xl overflow-hidden border border-border/60 relative">
-                    <img
-                      src={modalFeature.image}
-                      alt={`${modalFeature.label} preview`}
-                      className="w-full h-[44dvh] sm:h-[50dvh] lg:h-[72dvh] object-cover"
-                    />
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => goToModalIndex(modalIndex - 1)}
-                    className="absolute left-8 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full border border-border/60 bg-black/55 text-white grid place-items-center hover:bg-black/80 transition-colors"
-                    aria-label="Previous project"
-                  >
-                    <ChevronLeft size={18} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => goToModalIndex(modalIndex + 1)}
-                    className="absolute right-8 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full border border-border/60 bg-black/55 text-white grid place-items-center hover:bg-black/80 transition-colors"
-                    aria-label="Next project"
-                  >
-                    <ChevronRight size={18} />
-                  </button>
-
-                  <div className="mt-5 flex items-center justify-center gap-2">
-                    {FEATURES.map((feature, index) => (
-                      <button
-                        key={feature.id}
-                        type="button"
-                        onClick={() => goToModalIndex(index)}
-                        className={`h-2.5 rounded-full transition-all ${
-                          feature.id === modalFeature.id ? "w-8 bg-white" : "w-2.5 bg-white/35 hover:bg-white/60"
-                        }`}
-                        aria-label={`Go to ${feature.label}`}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                <div className="relative p-5 sm:p-6 lg:p-7 overflow-hidden">
-                  <button
-                    type="button"
-                    onClick={() => setModalId(null)}
-                    className="absolute top-5 right-5 h-11 w-11 rounded-full border border-border/60 bg-black/45 text-white grid place-items-center hover:bg-black/80 transition-colors"
-                    aria-label="Close modal"
-                  >
-                    <X size={17} />
-                  </button>
-
-                  <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3 mt-1">
-                    {modalFeature.type}
-                  </p>
-                  <h3 className="font-mono text-3xl lg:text-[2.2rem] font-bold leading-tight mb-5">
-                    {modalFeature.label}
-                  </h3>
-
-                  <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">Overview</p>
-                  <p className="text-muted-foreground leading-relaxed mb-6">{modalFeature.description}</p>
-
-                  <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">Key Features</p>
-                  <ul className="mb-6 border-y border-border/60">
-                    {modalFeature.details.map((item, idx) => (
-                      <li key={item} className="flex gap-3 py-2.5 border-b border-border/50 last:border-b-0">
-                        <span className="font-mono text-[11px] text-muted-foreground/70 pt-0.5">
-                          {String(idx + 1).padStart(2, "0")}
-                        </span>
-                        <span className="text-muted-foreground leading-relaxed text-[0.98rem]">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">Tech Stack</p>
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {modalFeature.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="font-mono text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-full border border-border bg-background/55 text-muted-foreground"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  <a
-                    href={modalFeature.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-md border border-mint/45 px-4 py-2.5 font-mono text-xs uppercase tracking-widest text-mint hover:bg-mint/10 transition-colors"
-                  >
-                    Open Website
-                    <ArrowUpRight size={14} />
-                  </a>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   );
 };
