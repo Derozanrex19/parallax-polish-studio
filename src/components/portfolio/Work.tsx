@@ -21,14 +21,15 @@ const FEATURES: Feature[] = [
     id: "posturease",
     label: "PosturEase",
     image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200",
-    description: "Real-time posture recognition with ML and Flask integration.",
+    description:
+      "Capstone posture-recognition platform where I led project delivery and cross-team execution from concept to final handoff.",
     type: "Capstone Project",
     details: [
-      "Developed a real-time posture detection pipeline with MediaPipe Pose and classification models.",
-      "Integrated Flask backend processing for model inference and response handling.",
-      "Managed project workflow and delivery coordination as project lead.",
+      "Served as Project Manager, orchestrating sprint planning, milestone tracking, and team coordination to keep delivery on schedule.",
+      "Aligned technical decisions with user value, translating complex requirements into clear priorities for design and development.",
+      "Guided end-to-end execution of a real-time posture analysis experience powered by MediaPipe and Flask-backed processing.",
     ],
-    tags: ["Python", "Flask", "MediaPipe", "Machine Learning"],
+    tags: ["Project Management", "Product Delivery", "MediaPipe", "Flask", "Machine Learning"],
     link: "#",
   },
   {
@@ -43,6 +44,21 @@ const FEATURES: Feature[] = [
       "Designed readable conversation and status patterns for operational support teams.",
     ],
     tags: ["React", "Supabase", "n8n", "Groq", "EmailJS"],
+    link: "https://smart-ai-pi-mocha.vercel.app/",
+  },
+  {
+    id: "behindyou",
+    label: "Behind You",
+    image: "/projects/behind-you-01.jpg",
+    description:
+      "Horror game concept where I led game design and AI-assisted asset direction for immersive player tension.",
+    type: "Game Design Project",
+    details: [
+      "Owned core game design decisions including loop pacing, tension-building flow, and environmental storytelling.",
+      "Directed rapid 3D asset ideation using MeshyAI to translate design intent into production-ready visual concepts.",
+      "Used Claude to refine mechanics, prompt strategy, and narrative interactions for clearer player progression.",
+    ],
+    tags: ["Game Design", "AI-Assisted Design", "MeshyAI", "Claude", "3D Asset Direction"],
     link: "#",
   },
   {
@@ -57,7 +73,7 @@ const FEATURES: Feature[] = [
       "Improved table and chart usability for data-heavy decision-making surfaces.",
     ],
     tags: ["React", "Vite", "Tailwind CSS", "Firebase", "Firestore"],
-    link: "#",
+    link: "https://headcount-ai.netlify.app/",
   },
   {
     id: "moviepicker",
@@ -71,7 +87,7 @@ const FEATURES: Feature[] = [
       "Designed and shipped a clean, animated frontend experience focused on simplicity.",
     ],
     tags: ["React", "TypeScript", "Vite", "Tailwind CSS", "Framer Motion"],
-    link: "#",
+    link: "https://movie-picker-bay.vercel.app/",
   },
 ];
 
@@ -204,7 +220,7 @@ export const Work = () => {
                   </div>
                 </div>
 
-                <div className="relative p-5 sm:p-6 lg:p-7 overflow-hidden">
+                <div className="relative p-5 sm:p-6 lg:p-7 overflow-hidden flex h-full flex-col">
                   <button
                     type="button"
                     onClick={() => setModalId(null)}
@@ -237,7 +253,7 @@ export const Work = () => {
                   </ul>
 
                   <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">Tech Stack</p>
-                  <div className="flex flex-wrap gap-2 mb-6">
+                  <div className="flex flex-wrap gap-2 mb-4">
                     {modalFeature.tags.map((tag) => (
                       <span
                         key={tag}
@@ -248,15 +264,27 @@ export const Work = () => {
                     ))}
                   </div>
 
-                  <a
-                    href={modalFeature.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-md border border-mint/45 px-4 py-2.5 font-mono text-xs uppercase tracking-widest text-mint hover:bg-mint/10 transition-colors"
-                  >
-                    Open Website
-                    <ArrowUpRight size={14} />
-                  </a>
+                  <div className="mt-auto pt-3">
+                    {modalFeature.link && modalFeature.link !== "#" ? (
+                      <a
+                        href={modalFeature.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-md border border-mint/45 px-4 py-2.5 font-mono text-xs uppercase tracking-widest text-mint hover:bg-mint/10 transition-colors"
+                      >
+                        Open Website
+                        <ArrowUpRight size={14} />
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-2 rounded-md border border-border/70 px-4 py-2.5 font-mono text-xs uppercase tracking-widest text-muted-foreground/80 cursor-default"
+                        aria-label="Website available on request"
+                      >
+                        Website Available on Request
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </motion.div>

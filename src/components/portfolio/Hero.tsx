@@ -1,10 +1,9 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { SplineScene } from "./SplineScene";
-import { ArrowDown, Github, Mail, Phone } from "lucide-react";
+import { ArrowDown, Github, Mail, Phone, UserRound } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 const NAME = "John Wrexel Antopina";
-const HERO_ROBOT_SCENE = "https://prod.spline.design/6Wq1Q7YGyM-iab9i/scene.splinecode";
 const CODE_SEGMENTS = [
   { text: "const dev = {\n  name: " },
   { text: "'John Wrexel Antopina'", className: "text-mint" },
@@ -180,6 +179,14 @@ export const Hero = () => {
               <ArrowDown size={14} className="relative z-10 group-hover:translate-y-0.5 transition-transform" />
               <span className="absolute inset-0 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 bg-foreground/10" />
             </a>
+
+            <Link
+              to="/about-me"
+              className="inline-flex items-center gap-2 border border-border/80 bg-background/35 text-foreground font-mono uppercase text-xs tracking-widest px-5 py-3.5 rounded-md hover:border-mint/50 hover:text-mint transition-colors"
+            >
+              <UserRound size={14} />
+              Get to know me
+            </Link>
 
             <div className="flex items-center gap-2">
               {[
