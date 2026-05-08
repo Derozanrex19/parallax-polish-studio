@@ -21,7 +21,6 @@ uniform mat4 uWorldMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uProjectionMatrix;
 uniform vec3 uCameraPosition;
-uniform vec4 uRotationAxisVelocity;
 in vec3 aModelPosition;
 in vec3 aModelNormal;
 in vec2 aModelUvs;
@@ -33,16 +32,6 @@ void main() {
   vec4 worldPosition = uWorldMatrix * aInstanceMatrix * vec4(aModelPosition, 1.);
   vec3 centerPos = (uWorldMatrix * aInstanceMatrix * vec4(0., 0., 0., 1.)).xyz;
   float radius = length(centerPos.xyz);
-  if (gl_VertexID > 0) {
-    vec3 rotationAxis = uRotationAxisVelocity.xyz;
-    float rotationVelocity = min(.15, uRotationAxisVelocity.w * 15.);
-    vec3 stretchDir = normalize(cross(centerPos, rotationAxis));
-    vec3 relativeVertexPos = normalize(worldPosition.xyz - centerPos);
-    float strength = dot(stretchDir, relativeVertexPos);
-    float invAbsStrength = min(0., abs(strength) - 1.);
-    strength = rotationVelocity * sign(strength) * abs(invAbsStrength * invAbsStrength * invAbsStrength + 1.);
-    worldPosition.xyz += stretchDir * strength;
-  }
   worldPosition.xyz = radius * normalize(worldPosition.xyz);
   gl_Position = uProjectionMatrix * uViewMatrix * worldPosition;
   vAlpha = smoothstep(0.5, 1., normalize(worldPosition.xyz).z) * .9 + .1;
@@ -69,8 +58,9 @@ void main() {
   vec2 st = vec2(vUvs.x, 1.0 - vUvs.y);
   st = clamp(st, 0.0, 1.0);
   st = st * cellSize + cellOffset;
+  float edgeFade = 1.0 - smoothstep(0.4, 0.5, distance(vUvs, vec2(0.5)));
   outColor = texture(uTex, st);
-  outColor.a *= vAlpha;
+  outColor.a *= vAlpha * edgeFade;
 }`;
 
 class Face { constructor(public a: number, public b: number, public c: number) {} }
@@ -122,7 +112,6 @@ class InfiniteGridMenu {
   prevPointer = vec2.create();
   pointer = vec2.create();
   dragging = false;
-  smoothRotationVelocity = 0;
   frame = 0;
   raf = 0;
   camera = { position: vec3.fromValues(0, 0, 3), matrix: mat4.create(), view: mat4.create(), projection: mat4.create(), up: vec3.fromValues(0, 1, 0), near: 0.1, far: 40, fov: Math.PI / 4 };
@@ -178,7 +167,6 @@ class InfiniteGridMenu {
       uViewMatrix: gl.getUniformLocation(this.program, "uViewMatrix"),
       uProjectionMatrix: gl.getUniformLocation(this.program, "uProjectionMatrix"),
       uCameraPosition: gl.getUniformLocation(this.program, "uCameraPosition"),
-      uRotationAxisVelocity: gl.getUniformLocation(this.program, "uRotationAxisVelocity"),
       uTex: gl.getUniformLocation(this.program, "uTex"),
       uItemCount: gl.getUniformLocation(this.program, "uItemCount"),
       uAtlasSize: gl.getUniformLocation(this.program, "uAtlasSize"),
@@ -331,8 +319,6 @@ class InfiniteGridMenu {
     }
     this.onActiveItemChange(nearest % Math.max(1, this.items.length));
 
-    this.smoothRotationVelocity = Math.min(1, Math.max(0, vec2.distance(this.pointer, this.prevPointer) / 120));
-
     const gl = this.gl;
     gl.bindBuffer(gl.ARRAY_BUFFER, this.instanceBuffer);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.instanceData);
@@ -344,6 +330,8 @@ class InfiniteGridMenu {
     gl.useProgram(this.program);
     gl.enable(gl.CULL_FACE);
     gl.enable(gl.DEPTH_TEST);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -351,7 +339,6 @@ class InfiniteGridMenu {
     gl.uniformMatrix4fv(this.loc.uViewMatrix as WebGLUniformLocation, false, this.camera.view);
     gl.uniformMatrix4fv(this.loc.uProjectionMatrix as WebGLUniformLocation, false, this.camera.projection);
     gl.uniform3f(this.loc.uCameraPosition as WebGLUniformLocation, this.camera.position[0], this.camera.position[1], this.camera.position[2]);
-    gl.uniform4f(this.loc.uRotationAxisVelocity as WebGLUniformLocation, 1, 0, 0, this.smoothRotationVelocity);
     gl.uniform1i(this.loc.uItemCount as WebGLUniformLocation, this.items.length);
     gl.uniform1i(this.loc.uAtlasSize as WebGLUniformLocation, this.atlasSize);
 

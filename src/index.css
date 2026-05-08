@@ -134,18 +134,39 @@
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
   .section-shell {
-    @apply relative py-28 sm:py-32;
+    @apply relative isolate min-h-[100svh] flex items-center py-20 sm:py-24 scroll-mt-16;
   }
   .section-header {
-    @apply mb-12 sm:mb-14;
+    @apply mb-8 sm:mb-10;
   }
   .section-eyebrow {
     @apply font-mono text-mint text-xs tracking-widest mb-4 flex items-center gap-3 uppercase;
   }
   .section-title {
-    @apply font-mono text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight;
+    @apply font-mono text-4xl sm:text-5xl lg:text-[3.35rem] font-bold leading-[1.05] tracking-tight;
   }
   .section-lead {
     @apply text-muted-foreground text-base sm:text-lg leading-relaxed;
+  }
+  .section-shell > .container {
+    @apply w-full;
+  }
+  .section-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 140px;
+    pointer-events: none;
+    background: linear-gradient(180deg, hsl(var(--background) / 0.92), transparent);
+    opacity: 0.9;
+  }
+  .section-shell::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 160px;
+    pointer-events: none;
+    background: linear-gradient(0deg, hsl(var(--background) / 0.95), transparent);
+    opacity: 0.9;
   }
 }

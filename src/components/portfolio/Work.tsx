@@ -133,7 +133,7 @@ export const Work = () => {
           </p>
         </div>
 
-        <div className="relative h-[56vh] min-h-[420px] max-h-[620px] md:h-[64vh] md:min-h-[500px] md:max-h-[700px] w-full overflow-hidden">
+        <div className="relative h-[44vh] min-h-[340px] max-h-[500px] w-full overflow-hidden md:h-[50vh] md:min-h-[380px] md:max-h-[560px]">
           <InfiniteMenu
             items={menuItems}
             scale={0.82}

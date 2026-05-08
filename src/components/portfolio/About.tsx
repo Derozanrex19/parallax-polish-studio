@@ -122,7 +122,10 @@ export const About = () => {
   const [rotationAngle, setRotationAngle] = useState<number>(0);
   const [autoRotate, setAutoRotate] = useState<boolean>(true);
   const [centerOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [orbitScale, setOrbitScale] = useState<number>(1);
+  const [orbitDiameter, setOrbitDiameter] = useState<number>(700);
   const orbitRef = useRef<HTMLDivElement>(null);
+  const orbitShellRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<Record<number, HTMLDivElement | null>>({});
 
   const getRelatedItems = (itemId: number): number[] => {
@@ -146,8 +149,41 @@ export const About = () => {
     };
   }, [autoRotate]);
 
+  useEffect(() => {
+    const updateOrbitLayout = () => {
+      const shell = orbitShellRef.current;
+      if (!shell) return;
+
+      const shellWidth = shell.clientWidth;
+      const viewportHeight = window.innerHeight;
+      const availableWidth = Math.max(500, shellWidth - 72);
+      const availableHeight = Math.max(500, viewportHeight - 280);
+      const nextDiameter = Math.min(620, availableWidth, availableHeight);
+
+      setOrbitDiameter(nextDiameter);
+      setOrbitScale(nextDiameter / 700);
+    };
+
+    updateOrbitLayout();
+
+    const observer = new ResizeObserver(() => {
+      updateOrbitLayout();
+    });
+
+    if (orbitShellRef.current) {
+      observer.observe(orbitShellRef.current);
+    }
+
+    window.addEventListener("resize", updateOrbitLayout);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateOrbitLayout);
+    };
+  }, []);
+
   const calculateNodePosition = (index: number, total: number) => {
-    const orbitBands = [170, 230, 290];
+    const orbitBands = [170, 230, 290].map((radius) => radius * orbitScale);
     const bandIndex = index % orbitBands.length;
     const radius = orbitBands[bandIndex];
     const baseAngle = (index / total) * 360;
@@ -175,14 +211,18 @@ export const About = () => {
         <p className="section-eyebrow">
           <span className="h-px w-8 bg-mint" /> 02 / EXPERTISE
         </p>
-        <h2 className="section-title mb-8">
+        <h2 className="section-title mb-6">
           Skill Orbit <span className="text-gradient">Map</span>
         </h2>
-        <p className="section-lead max-w-2xl mb-16">
+        <p className="section-lead max-w-2xl mb-10">
           My strengths span frontend engineering, dashboard UX, AI-assisted workflows, and system-level product thinking.
         </p>
 
-        <div className="relative w-full min-h-[820px] flex flex-col items-center justify-center overflow-visible pt-2">
+        <div
+          ref={orbitShellRef}
+          className="relative w-full flex flex-col items-center justify-center overflow-visible pt-2"
+          style={{ minHeight: `${Math.max(500, orbitDiameter + 48)}px` }}
+        >
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute left-1/4 top-1/4 h-56 w-56 rounded-full bg-mint/10 blur-3xl animate-pulse" />
             <div
@@ -199,19 +239,40 @@ export const About = () => {
                 transform: `translate(${centerOffset.x}px, ${centerOffset.y}px)`,
               }}
             >
-              <div className="absolute w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 via-blue-400 to-indigo-400 animate-pulse flex items-center justify-center z-10">
-                <div className="absolute w-28 h-28 rounded-full border border-white/20 animate-ping opacity-70" />
+              <div
+                className="absolute rounded-full bg-gradient-to-br from-cyan-400 via-blue-400 to-indigo-400 animate-pulse flex items-center justify-center z-10"
+                style={{ width: `${80 * orbitScale}px`, height: `${80 * orbitScale}px` }}
+              >
                 <div
-                  className="absolute w-36 h-36 rounded-full border border-white/10 animate-ping opacity-50"
-                  style={{ animationDelay: "0.5s" }}
+                  className="absolute rounded-full border border-white/20 animate-ping opacity-70"
+                  style={{ width: `${112 * orbitScale}px`, height: `${112 * orbitScale}px` }}
                 />
-                <div className="w-10 h-10 rounded-full bg-white/80 backdrop-blur-md" />
+                <div
+                  className="absolute rounded-full border border-white/10 animate-ping opacity-50"
+                  style={{ width: `${144 * orbitScale}px`, height: `${144 * orbitScale}px`, animationDelay: "0.5s" }}
+                />
+                <div
+                  className="rounded-full bg-white/80 backdrop-blur-md"
+                  style={{ width: `${40 * orbitScale}px`, height: `${40 * orbitScale}px` }}
+                />
               </div>
 
-              <div className="absolute w-[340px] h-[340px] rounded-full border border-white/10" />
-              <div className="absolute w-[460px] h-[460px] rounded-full border border-white/8" />
-              <div className="absolute w-[580px] h-[580px] rounded-full border border-white/[0.06]" />
-              <div className="absolute w-[700px] h-[700px] rounded-full border border-white/[0.04]" />
+              <div
+                className="absolute rounded-full border border-white/10"
+                style={{ width: `${340 * orbitScale}px`, height: `${340 * orbitScale}px` }}
+              />
+              <div
+                className="absolute rounded-full border border-white/8"
+                style={{ width: `${460 * orbitScale}px`, height: `${460 * orbitScale}px` }}
+              />
+              <div
+                className="absolute rounded-full border border-white/[0.06]"
+                style={{ width: `${580 * orbitScale}px`, height: `${580 * orbitScale}px` }}
+              />
+              <div
+                className="absolute rounded-full border border-white/[0.04]"
+                style={{ width: `${700 * orbitScale}px`, height: `${700 * orbitScale}px` }}
+              />
 
               {timelineData.map((item, index) => {
                 const position = calculateNodePosition(index, timelineData.length);
@@ -279,29 +340,29 @@ export const About = () => {
                     </div>
 
                     {isExpanded && (
-                      <Card className="absolute top-20 left-1/2 -translate-x-1/2 w-64 bg-black/90 backdrop-blur-lg border-white/30 shadow-xl shadow-white/10 overflow-visible">
-                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-px h-3 bg-white/50" />
+                      <Card className="absolute top-20 left-1/2 -translate-x-1/2 w-64 overflow-visible border-white/30 bg-black/90 shadow-xl shadow-white/10 backdrop-blur-lg">
+                        <div className="absolute -top-3 left-1/2 h-3 w-px -translate-x-1/2 bg-white/50" />
                         <CardHeader className="pb-2">
-                          <div className="flex justify-between items-center">
+                          <div className="flex items-center justify-between">
                             <span className="font-mono text-[10px] uppercase tracking-widest text-white/70">
                               Focus Area
                             </span>
                             <span className="text-xs font-mono text-white/50">{item.date}</span>
                           </div>
-                          <CardTitle className="text-sm mt-2">{item.title}</CardTitle>
+                          <CardTitle className="mt-2 text-sm">{item.title}</CardTitle>
                         </CardHeader>
                         <CardContent className="text-xs text-white/80">
                           <p>{item.content}</p>
 
-                          <div className="mt-4 pt-3 border-t border-white/10">
-                            <div className="flex justify-between items-center text-xs mb-1">
+                          <div className="mt-4 border-t border-white/10 pt-3">
+                            <div className="mb-1 flex items-center justify-between text-xs">
                               <span className="flex items-center">
                                 <Zap size={10} className="mr-1" />
                                 Energy Level
                               </span>
                               <span className="font-mono">{item.energy}%</span>
                             </div>
-                            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                            <div className="h-1 w-full overflow-hidden rounded-full bg-white/10">
                               <div
                                 className="h-full bg-gradient-to-r from-blue-500 to-purple-500"
                                 style={{ width: `${item.energy}%` }}
@@ -310,10 +371,10 @@ export const About = () => {
                           </div>
 
                           {item.relatedIds.length > 0 && (
-                            <div className="mt-4 pt-3 border-t border-white/10">
-                              <div className="flex items-center mb-2">
-                                <Link size={10} className="text-white/70 mr-1" />
-                                <h4 className="text-xs uppercase tracking-wider font-medium text-white/70">
+                            <div className="mt-4 border-t border-white/10 pt-3">
+                              <div className="mb-2 flex items-center">
+                                <Link size={10} className="mr-1 text-white/70" />
+                                <h4 className="text-xs font-medium uppercase tracking-wider text-white/70">
                                   Connected Nodes
                                 </h4>
                               </div>
@@ -325,7 +386,7 @@ export const About = () => {
                                       key={relatedId}
                                       variant="outline"
                                       size="sm"
-                                      className="flex items-center h-6 px-2 py-0 text-xs rounded-none border-white/20 bg-transparent hover:bg-white/10 text-white/80 hover:text-white transition-all"
+                                      className="flex h-6 items-center rounded-none border-white/20 bg-transparent px-2 py-0 text-xs text-white/80 transition-all hover:bg-white/10 hover:text-white"
                                       onMouseEnter={() => {
                                         setHoveredId(relatedId);
                                         setAutoRotate(false);
